@@ -1,0 +1,68 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package gerbertogcode;
+
+import static java.lang.Float.NaN;
+
+/**
+ *
+ * @author vojta3310
+ */
+public class Move {
+
+  private float toX = NaN;
+  private float toY = NaN;
+  private float ofX = 0;
+  private float ofY = 0;
+  private float toZ = NaN;
+  private float scale = 1;
+
+  public Move(float toX, float toY) {
+    this.toX = toX;
+    this.toY = toY;
+  }
+
+  public Move(float toZ) {
+    this.toZ = toZ;
+  }
+
+  public void scale(float s) {
+    scale = s;
+  }
+
+  public void ofset(float x, float y) {
+    ofX = x;
+    ofY = y;
+  }
+
+  StringBuilder toGcode() {
+    StringBuilder a = new StringBuilder("G1");
+    if (!Float.isNaN(toZ)) {
+      a.append(" Z");
+      a.append(Float.toString(getToZ()));
+    } else {
+      a.append(" X");
+      a.append(Float.toString(getToY()));
+      a.append(" Y");
+      a.append(Float.toString(getToX()));
+    }
+    a.append(" F3500.00\n");
+    return a;
+  }
+
+  public float getToX() {
+    return (toX + ofX) * scale;
+  }
+
+  public float getToY() {
+    return (toY + ofY) * scale;
+  }
+
+  public float getToZ() {
+    return toZ * scale;
+  }
+
+}
