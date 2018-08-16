@@ -28,7 +28,8 @@ public class GerberToGcode {
       + "   -show           Show final drawing in window.\n"
       + "   -debug          Write bebug messages.\n"
       + "\n"
-      + "Gerber To Gecode (G2G) version 0.0.1 (c)Vojta3310, 2018\n");
+      + "Gerber To Gecode (G2G) version 0.0.2 (c)Vojta3310, 2018\n"
+      + "Aviable from: https://github.com/Vojta3310/GerberToGcode\n");
   }
 
   /**

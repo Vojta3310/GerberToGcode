@@ -85,9 +85,9 @@ public class Mover {
       m.ofset(ofX, ofY);
       a.append(m.toGcode());
     });
-    a.append("G1 Z").append(zUp * scale);
-    a.append("G1 X0.0Y0.0");
-    a.append("M18");
+    a.append("G1 Z").append(zUp * scale).append("\n");
+    a.append("G1 X0.0 Y0.0\n");
+    a.append("M18\n");
     return a;
   }
 
