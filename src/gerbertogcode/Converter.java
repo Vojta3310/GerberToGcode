@@ -24,6 +24,7 @@ public class Converter {
   private boolean show = false;
   private String fileIn;
   private String fileOut ="out.gcode";
+  private int repeat=0;
 
   public void convert() {
     Mover mo = new Mover();
@@ -31,6 +32,7 @@ public class Converter {
     mo.setScale(scale);
     mo.setTolerance(tolerance);
     mo.setzUp(zUp);
+    mo.setRepeat(repeat);
     Parser pa = new Parser();
     pa.setBebug(bebug);
     pa.parseFile(fileIn, mo);
@@ -59,6 +61,7 @@ public class Converter {
       + "\n   penUp:      "+zUp
       + "\n   precision:  "+tolerance
       + "\n   scale:      "+scale
+      + "\n   repeat:     "+repeat
       + "\n   show:       "+show
       + "\n   debug:      "+bebug);
   }
@@ -94,4 +97,9 @@ public class Converter {
   public void setFileOut(String fileOut) {
     this.fileOut = fileOut;
   }
+
+  public void setRepeat(int repeat) {
+    this.repeat = repeat;
+  }
+  
 }

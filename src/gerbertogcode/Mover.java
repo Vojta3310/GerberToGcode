@@ -24,12 +24,13 @@ public class Mover {
   private float tolerance = 0.01f;
   private float scale = 1;
   private float zUp = 3;
+  private int repeat = 0;
 
   private final LinkedList<Move> moves = new LinkedList();
   private float x = 0;
   private float y = 0;
   private boolean up = false;
-  private float d = 0.9f;
+  private Tool tool = new Tool('C', .3f);
   private float minX = Float.MAX_VALUE;
   private float maxX = 0;
   private float minY = Float.MAX_VALUE;
@@ -37,8 +38,8 @@ public class Mover {
   private float ofX = 0;
   private float ofY = 0;
 
-  public void setTool(float d) {
-    this.d = d;
+  public void setTool(Tool t) {
+    this.tool = t;
   }
 
   public void move(float x, float y, int how) {
@@ -80,13 +81,15 @@ public class Mover {
     a.append("G21 (metric ftw)\n");
     a.append("G90 (absolute mode)\n");
     a.append("G92 X0 Y0 Z0 (you are here)\n");
-    moves.forEach((Move m) -> {
-      m.scale(scale);
-      m.ofset(ofX, ofY);
-      a.append(m.toGcode());
-    });
-    a.append("G1 Z").append(zUp * scale).append("\n");
-    a.append("G1 X0.0 Y0.0\n");
+    for (int i = 0; i < repeat + 1; ++i) {
+      moves.forEach((Move m) -> {
+        m.scale(scale);
+        m.ofset(ofX, ofY);
+        a.append(m.toGcode());
+      });
+      a.append("G1 Z").append(zUp * scale).append("\n");
+      a.append("G1 X0.0 Y0.0\n");
+    }
     a.append("M18\n");
     return a;
   }
@@ -151,7 +154,7 @@ public class Mover {
     float txn = tx / (float) Math.sqrt(tx * tx + ty * ty);
     float tyn = ty / (float) Math.sqrt(tx * tx + ty * ty);
 
-    float i = d / (penSize * 2) - 0.5f;
+    float i = tool.getD() / (penSize * 2) - 0.5f;
     for (; i > 0; i--) {
       //line to side
       add(new Move(x + nx * penSize * i, y + ny * penSize * i));
@@ -187,22 +190,80 @@ public class Mover {
       add(new Move(0));
       up = false;
     }
-    float i = d / (penSize * 2) - 0.5f;
-    for (; i > 0; i--) {
-      if (i == 0) {
-        continue;
+
+    if (tool.getS() == 'C') {
+      float i = tool.getD() / (penSize * 2) - 0.5f;
+      for (; i > 0; i--) {
+        if (i == 0) {
+          continue;
+        }
+        add(new Move(x - i * penSize, y));
+        for (float xi = x - i * penSize + tolerance; xi <= x + i * penSize; xi += tolerance) {
+          float py = y + (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
+          add(new Move(xi, py));
+        }
+        for (float xi = x + i * penSize - tolerance; xi >= x - i * penSize; xi -= tolerance) {
+          float py = y - (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
+          add(new Move(xi, py));
+        }
+        add(new Move(x - i * penSize, y));
       }
-      add(new Move(x - i * penSize, y));
-      for (float xi = x - i * penSize + tolerance; xi <= x + i * penSize; xi += tolerance) {
-        float py = y + (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
-        add(new Move(xi, py));
+    } else if (tool.getS() == 'R') {
+      float h = tool.getH();
+      float w = tool.getW();
+      add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2));
+
+      if (h >= w) {
+        float wa = 0;
+        while (wa < w - penSize) {
+          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
+          float z = w - wa - penSize;
+          if (z > penSize) {
+            wa += penSize;
+          } else {
+            wa += z;
+          }
+          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
+          add(new Move(x - w / 2 + penSize / 2 + wa, y - h / 2 + penSize / 2));
+          z = w - wa - penSize;
+          if (z <= 0) {
+            break;
+          } else if (z > penSize) {
+            wa += penSize;
+          } else {
+            wa += z;
+          }
+          add(new Move(x - w / 2 + penSize / 2 + wa, y - h / 2 + penSize / 2));
+          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
+        }
+      }else{
+        float ha = 0;
+        while (ha < h - penSize) {
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
+          float z = h - ha - penSize;
+          if (z > penSize) {
+            ha += penSize;
+          } else {
+            ha += z;
+          }
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
+          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2+ha));
+          z = h - ha - penSize;
+          if (z <= 0) {
+            break;
+          } else if (z > penSize) {
+            ha += penSize;
+          } else {
+            ha += z;
+          }
+          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2+ha));
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
+        }
       }
-      for (float xi = x + i * penSize - tolerance; xi >= x - i * penSize; xi -= tolerance) {
-        float py = y - (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
-        add(new Move(xi, py));
-      }
-      add(new Move(x - i * penSize, y));
+
+      add(new Move(x, y));
     }
+
     add(new Move(x, y));
   }
 
@@ -238,6 +299,10 @@ public class Mover {
 
   public void setzUp(float zUp) {
     this.zUp = zUp;
+  }
+
+  public void setRepeat(int repeat) {
+    this.repeat = repeat;
   }
 
 }

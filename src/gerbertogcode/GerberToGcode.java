@@ -25,6 +25,7 @@ public class GerberToGcode {
       + "   -penUp=<z>      Set z coords for pen up to <z>.\n"
       + "   -precision=<p>  Set min step to <p>.\n"
       + "   -scale=<s>      Set scale of drawing to <s>\n"
+      + "   -repeat=<t>     SET how mmany times encycle wires\n"
       + "   -show           Show final drawing in window.\n"
       + "   -debug          Write bebug messages.\n"
       + "\n"
@@ -53,6 +54,8 @@ public class GerberToGcode {
           co.setTolerance(Float.parseFloat(arg.substring(11)));
         } else if (arg.startsWith("-scale=")) {
           co.setScale(Float.parseFloat(arg.substring(7)));
+        } else if (arg.startsWith("-repeat=")) {
+          co.setRepeat(Integer.parseInt(arg.substring(8)));
         } else {
           printHelp();
           return;

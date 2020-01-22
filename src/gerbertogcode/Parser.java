@@ -17,7 +17,7 @@ public class Parser {
 
   private int formatx;
   private int formaty;
-  private final float[] tools = new float[90];
+  private final Tool[] tools = new Tool[999];
   private boolean bebug = false;
 
   public void setBebug(boolean bebug) {
@@ -76,15 +76,26 @@ public class Parser {
       float d;
       if (command.substring(5, 6).equals("C") || command.substring(5, 6).equals("P")) {
         d = Float.parseFloat(a[0]);
+        tools[Integer.parseInt(command.substring(3, 5)) - 10] = new Tool('C', d);
+        if (bebug) {
+          System.out.println("  Tool diametr:" + d);
+        }
       } else if (command.substring(5, 7).equals("OC")) {
         d = Float.parseFloat(command.substring(9));
-      } else {
-        d = (Float.parseFloat(a[0]) + Float.parseFloat(a[1])) / 2;
+        tools[Integer.parseInt(command.substring(3, 5)) - 10] = new Tool('C', d);
+        if (bebug) {
+          System.out.println("  Tool diametr:" + d);
+        }
+      } else if (command.substring(5, 6).equals("R")){
+        tools[Integer.parseInt(command.substring(3, 5)) - 10] = new Tool('R', Float.parseFloat(a[0]), Float.parseFloat(a[1]));
+        if (bebug) {
+          System.out.println("  Tool size:" + Float.parseFloat(a[0]) + "x" + Float.parseFloat(a[1]));
+        }
+        else{
+          System.out.println("Unknown tool !!!");
+        }
       }
-      if (bebug) {
-        System.out.println("  Tool diametr:" + d);
-      }
-      tools[Integer.parseInt(command.substring(3, 5)) - 10] = d;
+
     } else if (command.startsWith(
       "D")) {
       if (command.charAt(1) == '0') {
