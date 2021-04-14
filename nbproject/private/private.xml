@@ -14,6 +14,7 @@
         <group>
             <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Mover.java</file>
             <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/GerberToGcode.java</file>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Converter.java</file>
             <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Parser.java</file>
             <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Tool.java</file>
         </group>

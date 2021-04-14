@@ -23,6 +23,8 @@ public class Mover {
   private float penSize = 0.2f;
   private float tolerance = 0.01f;
   private float scale = 1;
+  private float mirX = 1;
+  private float mirY = 1;
   private float zUp = 3;
   private int repeat = 0;
 
@@ -84,7 +86,7 @@ public class Mover {
     for (int i = 0; i < repeat + 1; ++i) {
       moves.forEach((Move m) -> {
         m.scale(scale);
-        m.ofset(ofX, ofY);
+        m.ofset(ofX*mirX, ofY*mirY);
         a.append(m.toGcode());
       });
       a.append("G1 Z").append(zUp * scale).append("\n");
@@ -113,7 +115,7 @@ public class Mover {
     boolean drawing = false;
     for (Move m : moves) {
       m.scale(scaleGr);
-      m.ofset(ofX, ofY);
+      m.ofset(ofX*mirX, ofY*mirY);
       xa = m.getToX();
       ya = m.getToY();
       za = m.getToZ();
@@ -236,18 +238,18 @@ public class Mover {
           add(new Move(x - w / 2 + penSize / 2 + wa, y - h / 2 + penSize / 2));
           add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
         }
-      }else{
+      } else {
         float ha = 0;
         while (ha < h - penSize) {
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
           float z = h - ha - penSize;
           if (z > penSize) {
             ha += penSize;
           } else {
             ha += z;
           }
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
-          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2+ha));
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
+          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2 + ha));
           z = h - ha - penSize;
           if (z <= 0) {
             break;
@@ -256,8 +258,8 @@ public class Mover {
           } else {
             ha += z;
           }
-          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2+ha));
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2+ha));
+          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2 + ha));
+          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
         }
       }
 
@@ -268,6 +270,7 @@ public class Mover {
   }
 
   private void add(Move m) {
+    m.mirror(mirX, mirY);
     moves.add(m);
     if (m.getToX() < minX) {
       minX = m.getToX();
@@ -296,6 +299,15 @@ public class Mover {
   public void setScale(float scale) {
     this.scale = scale;
   }
+
+  public void setMirX(float mirX) {
+    this.mirX = mirX;
+  }
+
+  public void setMirY(float mirY) {
+    this.mirY = mirY;
+  }
+  
 
   public void setzUp(float zUp) {
     this.zUp = zUp;

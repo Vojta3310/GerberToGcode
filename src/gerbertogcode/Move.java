@@ -19,6 +19,8 @@ public class Move {
   private float ofY = 0;
   private float toZ = NaN;
   private float scale = 1;
+  private float mirX = 1;
+  private float mirY = 1;
 
   public Move(float toX, float toY) {
     this.toX = toX;
@@ -31,6 +33,11 @@ public class Move {
 
   public void scale(float s) {
     scale = s;
+  }
+
+  public void mirror(float x, float y) {
+    mirX = x;
+    mirY = y;
   }
 
   public void ofset(float x, float y) {
@@ -54,11 +61,11 @@ public class Move {
   }
 
   public float getToX() {
-    return (toX + ofX) * scale;
+    return (toX + ofX) * scale * mirX;
   }
 
   public float getToY() {
-    return (toY + ofY) * scale;
+    return (toY + ofY) * scale * mirY;
   }
 
   public float getToZ() {

@@ -22,6 +22,8 @@ public class Converter {
   private float zUp = 3;
   private boolean bebug = false;
   private boolean show = false;
+  private boolean mirX = false;
+  private boolean mirY = false;
   private String fileIn;
   private String fileOut ="out.gcode";
   private int repeat=0;
@@ -33,6 +35,8 @@ public class Converter {
     mo.setTolerance(tolerance);
     mo.setzUp(zUp);
     mo.setRepeat(repeat);
+    if (mirX) mo.setMirX(-1);
+    if (mirY) mo.setMirY(-1);
     Parser pa = new Parser();
     pa.setBebug(bebug);
     pa.parseFile(fileIn, mo);
@@ -61,6 +65,8 @@ public class Converter {
       + "\n   penUp:      "+zUp
       + "\n   precision:  "+tolerance
       + "\n   scale:      "+scale
+      + "\n   mirror X:   "+mirX
+      + "\n   mirror Y:   "+mirY
       + "\n   repeat:     "+repeat
       + "\n   show:       "+show
       + "\n   debug:      "+bebug);
@@ -80,6 +86,14 @@ public class Converter {
 
   public void setScale(float scale) {
     this.scale = scale;
+  }
+
+  public void setMirX(boolean mirX) {
+    this.mirX = mirX;
+  }
+
+  public void setMirY(boolean mirY) {
+    this.mirY = mirY;
   }
 
   public void setzUp(float zUp) {
