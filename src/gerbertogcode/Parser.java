@@ -91,9 +91,14 @@ public class Parser {
         if (bebug) {
           System.out.println("  Tool size:" + Float.parseFloat(a[0]) + "x" + Float.parseFloat(a[1]));
         }
-        else{
-          System.out.println("Unknown tool !!!");
+      } else if (command.substring(5, 6).equals("O")){
+        tools[Integer.parseInt(command.substring(3, 5)) - 10] = new Tool('O', Float.parseFloat(a[0]), Float.parseFloat(a[1]));
+        if (bebug) {
+          System.out.println("  Tool size:" + Float.parseFloat(a[0]) + "x" + Float.parseFloat(a[1]));
         }
+      }
+      else{
+        System.out.println("Unknown tool !!!");
       }
 
     } else if (command.startsWith(

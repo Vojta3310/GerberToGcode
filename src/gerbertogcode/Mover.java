@@ -262,6 +262,60 @@ public class Mover {
       }
 
       add(new Move(x, y));
+    } else if (tool.getS() == 'O') {
+
+        float h = tool.getH();
+        float w = tool.getW();
+        float d = Math.min(h, w);
+
+        float xs = x;
+        float ys = y;
+        float xf = x;
+        float yf = y;
+        if (h >= w) {
+            ys = y - (h - d) / 2;
+            yf = y + (h - d) / 2;
+        } else {
+            xf = x - (w - d) / 2;
+            xs = x + (w - d) / 2;
+        }
+    
+        float tx = xf - xs;
+        float ty = yf - ys;
+        float nx = -ty / (float) Math.sqrt(tx * tx + ty * ty);
+        float ny = tx / (float) Math.sqrt(tx * tx + ty * ty);
+        float txn = tx / (float) Math.sqrt(tx * tx + ty * ty);
+        float tyn = ty / (float) Math.sqrt(tx * tx + ty * ty);
+
+        float i = d / (penSize * 2) - 0.5f;
+        for (; i > 0; i--) {
+            //line to side
+            add(new Move(xf + nx * penSize * i, yf + ny * penSize * i));
+            //line back around
+            add(new Move(xs + nx * penSize * i, ys + ny * penSize * i));
+            //round around - circle vith center in this.x this.y and r = i*penSize
+            for (float ii = 0; ii <= i * penSize * 2; ii += tolerance) {
+                float xr = i * penSize - ii;
+                float yr = (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xr, 2));
+                float px = nx * xr - txn * yr + xs;
+                float py = ny * xr - tyn * yr + ys;
+                add(new Move(px, py));
+            }
+            add(new Move(xs - nx * penSize * i, ys - ny * penSize * i));
+            //line to around
+            add(new Move(xf - nx * penSize * i, yf - ny * penSize * i));
+            //round around
+            for (float ii = 0; ii <= i * penSize * 2; ii += tolerance) {
+                float xr = i * penSize - ii;
+                float yr = (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xr, 2));
+                float px = -nx * xr + txn * yr + xf;
+                float py = -ny * xr + tyn * yr + yf;
+                add(new Move(px, py));
+            }
+        }
+        //back to center
+        add(new Move(xf, yf));
+        
     }
 
     add(new Move(x, y));
