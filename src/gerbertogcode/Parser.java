@@ -86,7 +86,7 @@ public class Parser {
         if (bebug) {
           System.out.println("  Tool diametr:" + d);
         }
-      } else if (command.substring(5, 6).equals("R")){
+      } else if (command.substring(5, 6).equals("R")) {
         tools[Integer.parseInt(command.substring(3, 5)) - 10] = new Tool('R', Float.parseFloat(a[0]), Float.parseFloat(a[1]));
         if (bebug) {
           System.out.println("  Tool size:" + Float.parseFloat(a[0]) + "x" + Float.parseFloat(a[1]));
@@ -96,10 +96,10 @@ public class Parser {
         if (bebug) {
           System.out.println("  Tool size:" + Float.parseFloat(a[0]) + "x" + Float.parseFloat(a[1]));
         }
-      }
-      else{
+      } else {
         System.out.println("Unknown tool !!!");
       }
+
 
     } else if (command.startsWith(
       "D")) {
@@ -121,17 +121,30 @@ public class Parser {
       if (bebug) {
         System.out.println("  Move.");
       }
-      Float x = Float.NaN, y = Float.NaN;
-      if (command.contains("X") && command.contains("Y")) {
-        x = parseFloatX(command.substring(1, command.indexOf("Y")));
-        y = parseFloatY(command.substring(command.indexOf("Y") + 1, command.indexOf("D")));
-      } else if (command.contains("X") && !command.contains("Y")) {
-        x = parseFloatX(command.substring(1, command.indexOf("D")));
-        y = Float.NaN;
-      } else if (!command.contains("X") && command.contains("Y")) {
-        y = parseFloatY(command.substring(1, command.indexOf("D")));
-        x = Float.NaN;
+      
+      String coords[] = {"X","Y","I","J","D"};
+      Float values[] = {Float.NaN, Float.NaN, 0.0f, 0.0f};
+      
+      for (int i = 0; i < coords.length-1; i++) {
+        String coord = coords[i];
+        if(!command.contains(coord)){
+          continue;
+        }
+        int n = 1;
+        String next=coords[i+n];
+        while(!command.contains(next) && i + n < coords.length){
+          n++;
+          next=coords[i+n];
+        }
+        if(i%2==0){
+          values[i] = parseFloatX(command.substring(command.indexOf(coord) + 1, command.indexOf(next)));
+        }else{
+          values[i] = parseFloatY(command.substring(command.indexOf(coord) + 1, command.indexOf(next)));
+        }
       }
+      
+      Float x = values[0]+values[2];
+      Float y = values[1]+values[3];
       String d = command.substring(command.indexOf("D") + 1);
       if (bebug) {
         System.out.println("  To x:" + x + " y:" + y + " mode:" + d);

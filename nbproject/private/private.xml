@@ -11,6 +11,16 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group/>
+=======
+        <group>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Mover.java</file>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/GerberToGcode.java</file>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Converter.java</file>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Parser.java</file>
+            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Tool.java</file>
+        </group>
+>>>>>>> a712dec8199cdd7973b6e7085362e0adba425390
     </open-files>
 </project-private>

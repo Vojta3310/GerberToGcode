@@ -24,8 +24,10 @@ public class GerberToGcode {
       + "   -penSize=<w>    Set line widht to <w>\n"
       + "   -penUp=<z>      Set z coords for pen up to <z>.\n"
       + "   -precision=<p>  Set min step to <p>.\n"
-      + "   -scale=<s>      Set scale of drawing to <s>\n"
-      + "   -repeat=<t>     SET how mmany times encycle wires\n"
+      + "   -scale=<s>      Set scale of drawing to <s>.\n"
+      + "   -mirrorX        Mirror in X.\n"
+      + "   -mirrorY        Mirror in Y.\n"
+      + "   -repeat=<t>     SET how mmany times encycle wires.\n"
       + "   -show           Show final drawing in window.\n"
       + "   -debug          Write bebug messages.\n"
       + "\n"
@@ -52,6 +54,10 @@ public class GerberToGcode {
           co.setzUp(Float.parseFloat(arg.substring(7)));
         } else if (arg.startsWith("-precision=")) {
           co.setTolerance(Float.parseFloat(arg.substring(11)));
+        } else if (arg.equals("-mirrorX")) {
+          co.setMirX(true);
+        } else if (arg.equals("-mirrorY")) {
+          co.setMirY(true);
         } else if (arg.startsWith("-scale=")) {
           co.setScale(Float.parseFloat(arg.substring(7)));
         } else if (arg.startsWith("-repeat=")) {
