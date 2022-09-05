@@ -284,10 +284,17 @@ public class Mover {
     
         float tx = xf - xs;
         float ty = yf - ys;
-        float nx = -ty / (float) Math.sqrt(tx * tx + ty * ty);
-        float ny = tx / (float) Math.sqrt(tx * tx + ty * ty);
+        if(tx==0 && ty==0){
+            tx=1;
+        }        
         float txn = tx / (float) Math.sqrt(tx * tx + ty * ty);
         float tyn = ty / (float) Math.sqrt(tx * tx + ty * ty);
+        float nx = -tyn;
+        float ny = txn;
+        
+        
+        //go to begin
+        add(new Move(xs, ys));
 
         float i = d / (penSize * 2) - 0.5f;
         for (; i > 0; i--) {
@@ -315,8 +322,10 @@ public class Mover {
                 add(new Move(px, py));
             }
         }
-        //back to center
+        //back to center of circle on the end
         add(new Move(xf, yf));
+        //back to centr of line
+        add(new Move(x, y));
         
     }
 
